@@ -7,26 +7,18 @@ Window {
     color: "blue"
 
     Grid {
+        id: main
         anchors.fill: parent
         columns: sonotopy.gridWidth
         rows: sonotopy.gridHeight
 
         Repeater {
-            model: sonotopy.gridHeight
-            id: row
+            model: sonotopy.gridMapColors
 
-            Repeater {
-                model: sonotopy.gridWidth
-                Rectangle {
-                    color: "white"
-                    width: parent.width / sonotopy.gridWidth
-                    height: parent.height / sonotopy.gridHeight
-                    Text {
-                        anchors.centerIn: parent
-                        text: sonotopy.gridMapAt(index, row.index)
-                        color: "black"
-                    }
-                }
+            Rectangle {
+                color: modelData
+                width: main.width / sonotopy.gridWidth
+                height: main.height / sonotopy.gridHeight
             }
         }
 
