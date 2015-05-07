@@ -1,6 +1,6 @@
-#include <QDebug>
-
 #include "beeresonotopy.h"
+
+#include <QDebug>
 
 BeereSonotopy::BeereSonotopy(QObject *parent) : QObject(parent),
     buffer(audioParameters.bufferSize, 0)
@@ -14,19 +14,17 @@ BeereSonotopy::~BeereSonotopy()
     stopAudioProcessing();
 }
 
-int BeereSonotopy::gridMapAt(int i, int j)
+float BeereSonotopy::gridMapAt(int i, int j) const
 {
     return gridMap->getActivation(i, j);
 }
 
-QVariantList BeereSonotopy::gridMapAsList() const
+QList<qreal> BeereSonotopy::gridMapAsList() const
 {
-    QVariantList values;
-
-    for (int i=0; i<gridMapParameters.gridHeight; i++)
-        for (int j=0; j<gridMapParameters.gridWidth; j++)
-            values.append(QVariant(gridMap->getActivation(i, j)));
-
+    const std::vector<float> *p = gridMap->getActivationPattern();
+    const std::list<qreal> pD(p->begin(), p->end());
+    //QVector<qreal> vec = QVector<qreal>::fromStdVector(pD);
+    QList<qreal> values = QList<qreal>::fromStdList(pD);
     return values;
 }
 

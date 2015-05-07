@@ -1,23 +1,35 @@
 import QtQuick 2.4
 import QtQuick.Window 2.2
 
+
 Window {
     visible: true
+    color: "blue"
 
-    GridView {
+    Grid {
         anchors.fill: parent
-        model: sonotopy.gridMap
+        columns: sonotopy.gridWidth
+        rows: sonotopy.gridHeight
 
-        delegate: Rectangle {
-            color: white
-            width: parent.width / sonotopy.gridWidth
-            height: parent.height / sonotopy.gridHeight
-            Text {
-                anchors.centerIn: parent
-                text: "T"
-                color: black
+        Repeater {
+            model: sonotopy.gridHeight
+            id: row
+
+            Repeater {
+                model: sonotopy.gridWidth
+                Rectangle {
+                    color: "white"
+                    width: parent.width / sonotopy.gridWidth
+                    height: parent.height / sonotopy.gridHeight
+                    Text {
+                        anchors.centerIn: parent
+                        text: sonotopy.gridMapAt(index, row.index)
+                        color: "black"
+                    }
+                }
             }
         }
+
     }
 
 }

@@ -7,9 +7,9 @@
 class BeereSonotopy : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(int gridWidth READ gridWidth)
-    Q_PROPERTY(int gridHeight READ gridHeight)
-    Q_PROPERTY(QVariantList gridMap READ gridMapAsList NOTIFY gridMapChanged)
+    Q_PROPERTY(int gridWidth READ gridWidth NOTIFY gridWidthChanged)
+    Q_PROPERTY(int gridHeight READ gridHeight NOTIFY gridHeightChanged)
+    Q_PROPERTY(QList<qreal> gridMap READ gridMapAsList NOTIFY gridMapChanged)
 
 public:
     explicit BeereSonotopy(QObject *parent = 0);
@@ -17,13 +17,13 @@ public:
 
     int gridWidth() const;
     int gridHeight() const;
-    QVariantList gridMapAsList() const;
+    QList<qreal> gridMapAsList() const;
+    Q_INVOKABLE float gridMapAt(int, int) const;
 
 signals:
     void gridMapChanged();
-
-public slots:
-    int gridMapAt(int, int);
+    void gridWidthChanged();
+    void gridHeightChanged();
 
 private slots:
     void processAudio();
