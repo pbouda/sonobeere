@@ -3,6 +3,8 @@
 
 #include <QAudioInput>
 #include <QQmlListProperty>
+#include <QTimer>
+
 #include <sonotopy/sonotopy.hpp>
 
 class BeereSonotopy : public QObject
@@ -32,11 +34,14 @@ signals:
 
 private slots:
     void processAudio();
+    void update();
 
 private:
     QAudioInput* audio;
     QIODevice* audioDevice;
+    QAudioDeviceInfo currentAudioDevice;
     QByteArray buffer;
+    QTimer timer;
     sonotopy::AudioParameters audioParameters;
     sonotopy::SpectrumAnalyzerParameters spectrumAnalyzerParameters;
     sonotopy::GridMapParameters gridMapParameters;
