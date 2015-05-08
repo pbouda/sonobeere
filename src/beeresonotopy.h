@@ -15,6 +15,8 @@ class BeereSonotopy : public QObject
     Q_PROPERTY(QStringList gridMapColors READ gridMapColors NOTIFY gridMapChanged)
     Q_PROPERTY(QList<qreal> gridMap READ gridMapAsList NOTIFY gridMapChanged)
     Q_PROPERTY(int gridMapLength READ gridMapLength NOTIFY gridMapChanged)
+    Q_PROPERTY(QStringList availableAudioDevices MEMBER availableAudioDevices NOTIFY availableAudioDevicesChanged)
+    Q_PROPERTY(QString currentAudioDeviceName MEMBER currentAudioDeviceName NOTIFY currentAudioDeviceChanged)
 
 public:
     explicit BeereSonotopy(QObject *parent = 0);
@@ -31,15 +33,20 @@ signals:
     void gridMapChanged();
     void gridWidthChanged();
     void gridHeightChanged();
+    void availableAudioDevicesChanged();
+    void currentAudioDeviceChanged();
 
 private slots:
     void processAudio();
     void update();
+    void deviceChanged();
 
 private:
     QAudioInput* audio;
     QIODevice* audioDevice;
     QAudioDeviceInfo currentAudioDevice;
+    QString currentAudioDeviceName;
+    QStringList availableAudioDevices;
     QByteArray buffer;
     QTimer timer;
     sonotopy::AudioParameters audioParameters;

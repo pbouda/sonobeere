@@ -1,13 +1,13 @@
 import QtQuick 2.4
 import QtQuick.Window 2.2
 
-
 Window {
     visible: true
-    color: "blue"
+    color: "black"
+    id: window
 
     Grid {
-        id: main
+        id: grid
         anchors.fill: parent
         columns: sonotopy.gridWidth
         rows: sonotopy.gridHeight
@@ -17,11 +17,15 @@ Window {
 
             Rectangle {
                 color: modelData
-                width: main.width / sonotopy.gridWidth
-                height: main.height / sonotopy.gridHeight
+                width: window.width / sonotopy.gridWidth
+                height: window.height / sonotopy.gridHeight
             }
         }
-
     }
 
+
+    SelectBox {
+        options: sonotopy.availableAudioDevices
+        anchors.top: parent.top
+    }
 }

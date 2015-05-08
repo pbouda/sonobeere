@@ -5,19 +5,18 @@
 BeereSonotopy::BeereSonotopy(QObject *parent) : QObject(parent)
 {
     currentAudioDevice = QAudioDeviceInfo::defaultInputDevice();
-    /*foreach (QAudioDeviceInfo i, QAudioDeviceInfo::availableDevices(QAudio::AudioInput)) {
-        qDebug() << i.deviceName();
-        if (i.deviceName() == "alsa_input.usb-Samson_Technologies_Samson_Go_Mic_Direct-00-Direct.analog-stereo") {
-            currentAudioDevice = i;
-        }
-    }*/
+    currentAudioDeviceName = currentAudioDevice.deviceName();
+    foreach (QAudioDeviceInfo i, QAudioDeviceInfo::availableDevices(QAudio::AudioInput)) {
+        availableAudioDevices.append(i.deviceName());
+    }
 
     initializeAudioDevice();
     initializeAudioProcessing();
     buffer = QByteArray(audioParameters.bufferSize*4, 0);
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
-    timer.start(1000 / 25);
+    timer.start(1000 / 33);
 
+    connect(this, SIGNAL(currentAudioDeviceChanged()), this, SLOT(deviceChanged()));
 }
 
 BeereSonotopy::~BeereSonotopy()
@@ -106,6 +105,20 @@ void BeereSonotopy::update()
     emit gridMapChanged();
 }
 
+void BeereSonotopy::deviceChanged()
+{
+    audio->stop();
+    delete audio;
+
+    foreach (QAudioDeviceInfo i, QAudioDeviceInfo::availableDevices(QAudio::AudioInput)) {
+        if (i.deviceName() == currentAudioDeviceName) {
+            currentAudioDevice = i;
+            qDebug() << "Changed device to " << currentAudioDeviceName;
+        }
+    }
+    initializeAudioDevice();
+}
+
 void BeereSonotopy::initializeAudioProcessing()
 {
     gridMap = new sonotopy::GridMap(audioParameters, spectrumAnalyzerParameters, gridMapParameters);
@@ -122,11 +135,9 @@ void BeereSonotopy::initializeAudioDevice()
     format.setByteOrder(QAudioFormat::LittleEndian);
     format.setSampleType(QAudioFormat::Float);
 
-    QAudioDeviceInfo info = QAudioDeviceInfo::defaultInputDevice();
-    qDebug() << info.deviceName();
-    if (!info.isFormatSupported(format)) {
+    if (!currentAudioDevice.isFormatSupported(format)) {
         qWarning() << "Default format not supported, trying to use the nearest.";
-        format = info.nearestFormat(format);
+        format = currentAudioDevice.nearestFormat(format);
         qDebug() << format;
     }
 
