@@ -80,8 +80,6 @@ int BeereSonotopy::gridMapLength() const
 void BeereSonotopy::processAudioSonotopy(const float *inputBuffer)
 {
     gridMap->feedAudio(inputBuffer, audioParameters.bufferSize);
-    //emit gridMapChanged();
-    //qDebug() << gridMap->getActivation(15, 15);
 }
 
 void BeereSonotopy::processAudio()
@@ -89,12 +87,9 @@ void BeereSonotopy::processAudio()
     if (!audio)
         return;
     int len = audio->bytesReady();
-    //qDebug() << len;
     if (len > audioParameters.bufferSize*4)
         len = audioParameters.bufferSize*4;
     int l = audioDevice->read(buffer.data(), len);
-    //qDebug() << audio->error();
-    //qDebug() << l;
     if (l > 0) {
         processAudioSonotopy(reinterpret_cast<const float*>(buffer.data()));
     }
